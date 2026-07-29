@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>For My Nonu ❤️</title>
+<style>
+:root{
+  --bg1:#081124;
+  --bg2:#17275a;
+  --wood1:#8b4d26;
+  --wood2:#5a2e18;
+  --paper:#fff8dc;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;width:100%;height:100%;overflow:hidden}
+body{
+  font-family:"Segoe UI",Arial,sans-serif;
+  background:
+    radial-gradient(circle at 50% 18%,rgba(91,125,255,.18),transparent 32%),
+    linear-gradient(180deg,var(--bg1),var(--bg2));
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  color:white;
+  perspective:1500px;
+}
+.sky,.stars,.fireflies,.petals{position:fixed;inset:0;pointer-events:none}
+.star{
+  position:absolute;width:3px;height:3px;border-radius:50%;
+  background:#fff;opacity:.5;animation:twinkle 2.8s ease-in-out infinite;
+}
+@keyframes twinkle{0%,100%{opacity:.2;transform:scale(.7)}50%{opacity:1;transform:scale(1.5)}}
+.firefly{
+  position:absolute;width:5px;height:5px;border-radius:50%;
+  background:#ffe98c;box-shadow:0 0 14px #ffe98c;
+  animation:fly 8s linear infinite;opacity:.7;
+}
+@keyframes fly{
+  0%{transform:translate(0,0) scale(.7);opacity:0}
+  15%{opacity:.8}
+  50%{transform:translate(45px,-70px) scale(1)}
+  85%{opacity:.7}
+  100%{transform:translate(-25px,-150px) scale(.6);opacity:0}
+}
+.stage{
+  position:relative;
+  width:min(94vw,520px);
+  height:min(92vh,760px);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.intro{
+  position:absolute;
+  top:9%;
+  text-align:center;
+  width:100%;
+  z-index:8;
+  transition:.6s;
+}
+.intro h1{font-size:clamp(26px,7vw,42px);margin:0 0 8px;font-weight:800}
+.intro p{margin:0;color:#d9e3ff;font-size:14px}
+.scene{
+  position:relative;
+  width:min(90vw,430px);
+  height:500px;
+  transform-style:preserve-3d;
+  margin-top:80px;
+}
+.box-wrap{
+  position:absolute;
+  left:50%;
+  bottom:42px;
+  width:330px;
+  height:205px;
+  transform:translateX(-50%);
+  transform-style:preserve-3d;
+  transition:transform .6s ease;
+}
+.box{
+  position:absolute;inset:52px 0 0;
+  border-radius:18px;
+  background:
+    linear-gradient(90deg,rgba(255,255,255,.08),transparent 30%,rgba(0,0,0,.15)),
+    repeating-linear-gradient(0deg,var(--wood1) 0 18px,#7a401f 18px 20px);
+  box-shadow:0 28px 44px rgba(0,0,0,.45),inset 0 0 0 3px rgba(255,255,255,.05);
+  border:3px solid #4a2514;
+  z-index:3;
+}
+.box:before{
+  content:"";position:absolute;left:0;right:0;top:48%;
+  height:3px;background:#45200f;opacity:.7
+}
+.box-label{
+  position:absolute;left:50%;top:52%;transform:translate(-50%,-50%);
+  background:#2d160d;border:2px solid #d7a85f;border-radius:8px;
+  padding:9px 18px;white-space:nowrap;
+  font-family:"Segoe Print","Comic Sans MS",cursive;font-weight:700;
+  box-shadow:0 5px 12px rgba(0,0,0,.35);
+}
+.lock{
+  position:absolute;left:50%;top:42px;transform:translateX(-50%);
+  width:42px;height:46px;background:linear-gradient(#ffd97b,#b8781d);
+  border-radius:7px 7px 10px 10px;border:2px solid #7c4a10;z-index:7;
+  transition:.5s;
+}
+.lock:before{
+  content:"";position:absolute;width:24px;height:23px;border:5px solid #dfaa45;
+  border-bottom:0;border-radius:16px 16px 0 0;left:7px;top:-18px;
+}
+.lid{
+  position:absolute;left:0;right:0;top:0;height:92px;
+  border-radius:18px 18px 10px 10px;
+  background:
+    linear-gradient(90deg,rgba(255,255,255,.09),transparent 35%,rgba(0,0,0,.16)),
+    repeating-linear-gradient(0deg,#955027 0 17px,#7b3f1e 17px 20px);
+  border:3px solid #4a2514;
+  transform-origin:bottom center;
+  transform:rotateX(0deg);
+  transition:transform 1s cubic-bezier(.2,.8,.2,1);
+  z-index:5;
+  box-shadow:0 12px 24px rgba(0,0,0,.3);
+}
+.glow{
+  position:absolute;left:50%;bottom:125px;transform:translateX(-50%);
+  width:240px;height:140px;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,238,165,.6),rgba(255,215,90,.14) 45%,transparent 72%);
+  opacity:0;filter:blur(8px);transition:.8s;z-index:1;
+}
+.letter{
+  position:absolute;left:50%;bottom:95px;
+  width:min(84vw,370px);
+  min-height:330px;
+  padding:34px 28px 28px;
+  background:
+    linear-gradient(90deg,rgba(185,150,72,.06),transparent 18%,transparent 82%,rgba(185,150,72,.06)),
+    repeating-linear-gradient(0deg,transparent 0 30px,rgba(72,120,170,.10) 30px 31px),
+    var(--paper);
+  color:#2b2a25;
+  border-radius:15px;
+  box-shadow:0 24px 50px rgba(0,0,0,.38);
+  transform:translateX(-50%) translateY(180px) rotateX(88deg) scale(.55);
+  transform-origin:bottom center;
+  opacity:0;z-index:4;
+  transition:transform .9s cubic-bezier(.18,.84,.25,1),opacity .45s ease;
+  overflow:hidden;
+}
+.letter:before{
+  content:"";position:absolute;left:50%;top:0;bottom:0;width:1px;
+  background:linear-gradient(transparent,rgba(126,96,44,.18),transparent);
+}
+.letter:after{
+  content:"";position:absolute;right:0;top:0;
+  border-style:solid;border-width:0 0 58px 58px;
+  border-color:transparent transparent #ead89e transparent;
+  filter:drop-shadow(-4px 5px 4px rgba(0,0,0,.12));
+}
+.message{
+  min-height:235px;display:flex;align-items:center;justify-content:center;
+  text-align:center;font-family:"Segoe Print","Comic Sans MS",cursive;
+  font-size:27px;line-height:1.38;font-weight:700;
+}
+.counter{font-size:12px;text-align:center;color:#746a52;margin-top:12px}
+.hint{
+  position:absolute;left:50%;bottom:5px;transform:translateX(-50%);
+  font-size:13px;color:#e2e7ff;z-index:10;text-align:center;width:100%;
+}
+.open .lid{transform:rotateX(-112deg) translateY(-2px)}
+.open .lock{transform:translateX(-50%) translateY(18px) rotate(18deg);opacity:0}
+.open .glow{opacity:1}
+.open .letter{
+  transform:translateX(-50%) translateY(-92px) rotateX(0deg) scale(1) rotate(-1.5deg);
+  opacity:1;
+}
+.open .intro{opacity:0;transform:translateY(-18px);pointer-events:none}
+.scene.changing .letter{
+  transform:translateX(-50%) translateY(120px) rotateX(72deg) scale(.72) rotate(5deg);
+  opacity:.08;
+}
+.spark{
+  position:fixed;z-index:50;pointer-events:none;font-size:20px;
+  animation:burst .95s ease-out forwards;
+}
+@keyframes burst{
+  0%{transform:translate(-50%,-50%) scale(.25) rotate(0);opacity:1}
+  100%{transform:translate(var(--x),var(--y)) scale(1.3) rotate(180deg);opacity:0}
+}
+.pet{
+  position:absolute;top:-40px;font-size:20px;animation:fall linear forwards;
+}
+@keyframes fall{
+  to{transform:translate(var(--drift),110vh) rotate(520deg);opacity:.2}
+}
+.final-screen{
+  position:fixed;inset:0;display:flex;align-items:center;justify-content:center;
+  flex-direction:column;text-align:center;padding:28px;
+  background:radial-gradient(circle at center,rgba(255,134,174,.25),rgba(8,17,36,.96) 65%);
+  opacity:0;pointer-events:none;transition:1s;z-index:100;
+}
+.final-screen.show{opacity:1;pointer-events:auto}
+.final-screen h2{font-size:clamp(34px,9vw,58px);margin:0 0 12px}
+.final-screen p{font-family:"Segoe Print","Comic Sans MS",cursive;font-size:20px;color:#ffe8f1}
+.restart{
+  margin-top:24px;padding:12px 22px;border:0;border-radius:999px;
+  background:white;color:#24325f;font-weight:700;font-size:15px;
+}
+@media(max-height:680px){
+  .scene{transform:scale(.86);margin-top:58px}
+  .intro{top:3%}
+}
+</style>
+</head>
+<body>
+<div class="sky" id="stars"></div>
+<div class="fireflies" id="fireflies"></div>
+<div class="petals" id="petals"></div>
+
+<div class="stage">
+  <div class="intro">
+    <h1>For My Nonu ❤️</h1>
+    <p>Tap the memory box to open</p>
+  </div>
+
+  <div class="scene" id="scene">
+    <div class="glow"></div>
+
+    <div class="letter" id="letter">
+      <div class="message" id="message"></div>
+      <div class="counter" id="counter"></div>
+    </div>
+
+    <div class="box-wrap" id="boxWrap">
+      <div class="lid"></div>
+      <div class="box">
+        <div class="box-label">For My Nonu ❤️</div>
+      </div>
+      <div class="lock"></div>
+    </div>
+  </div>
+
+  <div class="hint" id="hint">Tap the box ✨</div>
+</div>
+
+<div class="final-screen" id="finalScreen">
+  <h2>Thank You For Being You ❤️</h2>
+  <p>You are truly priceless, Nonu.</p>
+  <button class="restart" id="restart">Open Again</button>
+</div>
+
+<script>
+const messages=[
+`Kuch special bate apke liye`,
+`Nonu, meri puri life me tere jaisi best ladki aur best friend kabhi nahi dekhi. Shayad koi itni selfless bhi nahi hogi.`,
+`Puri Angzzz hai tu... itni cute aur sundar ki nazar na lage. 🧿`,
+`Tere andar bahut zyada uniqueness hai. YOU ARE PRICELESS.`,
+`Nonu, tu bahut sensitive hai. Tujhe sirf pyar chahiye aur badle me tu double-triple pyar deti hai.`,
+`Yaar, tu expectations se bhi zyada deserve karti hai. ♾️`,
+`Tu dusron ke liye itna kaise soch leti hai? Ye baat aaj tak samajh nahi aayi.`,
+`To be honest, meri nazar me words kam pad jaate hain. Tu best aur perfect hai.`,
+`Efforts ka dusra naam tu hai. Tere efforts, pyar aur maturity... everything. ❤️`,
+`Dil se bol raha hu Nonu, please apne pyare mukhde ko udaas mat rakha kar.`,
+`Khushi, tu hasti raha kar. Teri har smile priceless hai. 😊`,
+`Nonegram beta, you are more and more powerful than everyone. 💪`
+];
+
+const scene=document.getElementById("scene");
+const message=document.getElementById("message");
+const counter=document.getElementById("counter");
+const hint=document.getElementById("hint");
+const finalScreen=document.getElementById("finalScreen");
+let opened=false,index=0,busy=false,audioCtx=null,startX=0;
+
+function buildSky(){
+  const s=document.getElementById("stars");
+  for(let i=0;i<85;i++){
+    const e=document.createElement("i");
+    e.className="star";
+    e.style.left=Math.random()*100+"%";
+    e.style.top=Math.random()*100+"%";
+    e.style.animationDelay=Math.random()*3+"s";
+    e.style.animationDuration=(2+Math.random()*3)+"s";
+    s.appendChild(e);
+  }
+  const f=document.getElementById("fireflies");
+  for(let i=0;i<12;i++){
+    const e=document.createElement("i");
+    e.className="firefly";
+    e.style.left=Math.random()*100+"%";
+    e.style.top=(40+Math.random()*55)+"%";
+    e.style.animationDelay=Math.random()*8+"s";
+    e.style.animationDuration=(6+Math.random()*7)+"s";
+    f.appendChild(e);
+  }
+}
+function initAudio(){
+  if(!audioCtx) audioCtx=new (window.AudioContext||window.webkitAudioContext)();
+  if(audioCtx.state==="suspended") audioCtx.resume();
+}
+function tone(freq,dur,vol=.05,type="sine",delay=0){
+  initAudio();
+  const now=audioCtx.currentTime+delay;
+  const o=audioCtx.createOscillator(),g=audioCtx.createGain();
+  o.type=type;o.frequency.value=freq;
+  g.gain.setValueAtTime(.0001,now);
+  g.gain.exponentialRampToValueAtTime(vol,now+.02);
+  g.gain.exponentialRampToValueAtTime(.0001,now+dur);
+  o.connect(g).connect(audioCtx.destination);o.start(now);o.stop(now+dur+.05);
+}
+function rustle(){
+  initAudio();
+  const len=Math.floor(audioCtx.sampleRate*.3);
+  const b=audioCtx.createBuffer(1,len,audioCtx.sampleRate);
+  const d=b.getChannelData(0);
+  for(let i=0;i<len;i++) d[i]=(Math.random()*2-1)*(1-i/len)*.25;
+  const src=audioCtx.createBufferSource(),filter=audioCtx.createBiquadFilter(),g=audioCtx.createGain();
+  src.buffer=b;filter.type="bandpass";filter.frequency.value=1200;filter.Q.value=.8;
+  g.gain.value=.13;src.connect(filter).connect(g).connect(audioCtx.destination);src.start();
+}
+function openSound(){
+  tone(170,.12,.07,"triangle");
+  tone(330,.35,.05,"sine",.12);
+  tone(494,.45,.04,"sine",.18);
+}
+function burst(){
+  const r=scene.getBoundingClientRect();
+  const icons=["✨","✦","💗","⭐"];
+  for(let i=0;i<13;i++){
+    const sp=document.createElement("span");
+    sp.className="spark";sp.textContent=icons[Math.floor(Math.random()*icons.length)];
+    sp.style.left=(r.left+r.width/2)+"px";
+    sp.style.top=(r.top+r.height*.48)+"px";
+    sp.style.setProperty("--x",(Math.random()*260-130)+"px");
+    sp.style.setProperty("--y",(Math.random()*220-155)+"px");
+    document.body.appendChild(sp);setTimeout(()=>sp.remove(),1100);
+  }
+}
+function fitText(){
+  let size=29;message.style.fontSize=size+"px";
+  while((message.scrollHeight>238 || message.scrollWidth>320) && size>17){
+    size--;message.style.fontSize=size+"px";
+  }
+}
+function showMessage(){
+  message.textContent=messages[index];
+  counter.textContent=(index+1)+" / "+messages.length;
+  fitText();
+}
+function openBox(){
+  if(opened)return;
+  opened=true;initAudio();openSound();rustle();burst();
+  scene.classList.add("open");
+  showMessage();
+  hint.textContent="Swipe or tap for the next memory 💌";
+  if(navigator.vibrate) navigator.vibrate(35);
+}
+function nextMessage(dir=1){
+  if(!opened){openBox();return}
+  if(busy)return;
+  if(index===messages.length-1 && dir>0){finish();return}
+  busy=true;rustle();tone(659,.22,.04,"sine");burst();
+  scene.classList.add("changing");
+  setTimeout(()=>{
+    index=(index+dir+messages.length)%messages.length;
+    showMessage();
+    scene.classList.remove("changing");
+    if(navigator.vibrate) navigator.vibrate(20);
+    setTimeout(()=>busy=false,650);
+  },470);
+}
+function finish(){
+  rustle();tone(523,.8,.05,"sine");tone(659,.9,.04,"sine",.15);tone(784,1,.04,"sine",.3);
+  finalScreen.classList.add("show");
+  const p=document.getElementById("petals");
+  p.innerHTML="";
+  for(let i=0;i<34;i++){
+    const e=document.createElement("span");e.className="pet";
+    e.textContent=Math.random()>.45?"🌸":"🌹";
+    e.style.left=Math.random()*100+"%";
+    e.style.animationDuration=(4+Math.random()*4)+"s";
+    e.style.animationDelay=Math.random()*2+"s";
+    e.style.setProperty("--drift",(Math.random()*180-90)+"px");
+    p.appendChild(e);
+  }
+}
+scene.addEventListener("click",()=>opened?nextMessage(1):openBox());
+document.addEventListener("touchstart",e=>startX=e.touches[0].clientX,{passive:true});
+document.addEventListener("touchend",e=>{
+  const d=e.changedTouches[0].clientX-startX;
+  if(Math.abs(d)>45) nextMessage(d<0?1:-1);
+},{passive:true});
+document.getElementById("restart").onclick=()=>{
+  finalScreen.classList.remove("show");
+  document.getElementById("petals").innerHTML="";
+  index=0;showMessage();
+};
+window.addEventListener("resize",fitText);
+buildSky();
+</script>
+</body>
+</html>
