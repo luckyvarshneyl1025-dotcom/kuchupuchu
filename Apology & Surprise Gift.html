@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Mujhe Maaf Kar Dijiye ❤️</title>
+  <!-- Google Fonts for romantic typography & clean modern UI -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,500&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            hand: ['"Caveat"', 'cursive'],
+            serif: ['"Playfair Display"', 'serif'],
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+          },
+          colors: {
+            rosewater: '#FFE9EC',
+            blush: '#FFCCD5',
+            petal: '#FFF5F6',
+            heartpink: '#FF4D6D',
+            deepruby: '#A4133C',
+            creamy: '#FFFDF9',
+            warmgold: '#D4A373'
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    * {
+      -webkit-tap-highlight-color: transparent;
+      box-sizing: border-box;
+    }
+    body {
+      background: radial-gradient(circle at 50% 20%, #FFF5F7 0%, #FFE8EC 60%, #FFDCE2 100%);
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+      touch-action: manipulation;
+    }
+
+    /* Floating Canvas */
+    #ambientCanvas, #confettiCanvas {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+    }
+    #confettiCanvas {
+      z-index: 50;
+    }
+
+    /* Soft Glow & Shadows */
+    .paper-card {
+      background: rgba(255, 255, 255, 0.94);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 20px 45px -10px rgba(225, 112, 133, 0.22),
+                  0 8px 16px -6px rgba(164, 19, 60, 0.08),
+                  inset 0 0 0 1px rgba(255, 255, 255, 0.8);
+      border: 1px solid rgba(255, 204, 213, 0.5);
+    }
+
+    .paper-texture {
+      background-image: radial-gradient(#ffebee 0.75px, transparent 0.75px);
+      background-size: 14px 14px;
+    }
+
+    /* Screen Transition Animation */
+    .screen-container {
+      transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1), transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .screen-hidden {
+      display: none !important;
+      opacity: 0;
+      transform: scale(0.96) translateY(16px);
+      pointer-events: none;
+    }
+    .screen-visible {
+      display: flex !important;
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+
+    /* No button smooth flight */
+    #btnNo {
+      transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.2s ease;
+      will-change: transform, left, top;
+      user-select: none;
+    }
+
+    .gift-stage {
+      perspective: 900px;
+    }
+
+    .gift-box-wrap {
+      position: relative;
+      width: 170px;
+      height: 170px;
+      cursor: pointer;
+      transform-style: preserve-3d;
+      transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .gift-box-wrap:hover {
+      transform: scale(1.05) rotateY(4deg);
+    }
+
+    .box-lid {
+      position: absolute;
+      top: -12px;
+      left: -8px;
+      width: 186px;
+      height: 48px;
+      background: linear-gradient(135deg, #FF6B8B 0%, #FF3366 100%);
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(255, 51, 102, 0.35);
+      z-index: 10;
+      transition: transform 0.7s cubic-bezier(0.68, -0.55, 0.265, 1.55), opacity 0.4s ease;
+      transform-origin: top center;
+    }
+
+    .box-body {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 170px;
+      height: 135px;
+      background: linear-gradient(145deg, #FF4D6D 0%, #C9184A 100%);
+      border-radius: 16px;
+      box-shadow: 0 20px 40px rgba(164, 19, 60, 0.35), inset 0 -8px 12px rgba(0,0,0,0.12);
+      overflow: hidden;
+    }
+
+    .ribbon-v {
+      position: absolute;
+      left: 50%;
+      top: 0;
+      bottom: 0;
+      width: 32px;
+      transform: translateX(-50%);
+      background: linear-gradient(90deg, #FDE68A 0%, #F59E0B 50%, #D97706 100%);
+      box-shadow: 0 0 10px rgba(245, 158, 11, 0.4);
+    }
+
+    .ribbon-h {
+      position: absolute;
+      top: 48%;
+      left: 0;
+      right: 0;
+      height: 30px;
+      transform: translateY(-50%);
+      background: linear-gradient(180deg, #FDE68A 0%, #F59E0B 50%, #D97706 100%);
+      box-shadow: 0 0 10px rgba(245, 158, 11, 0.4);
+    }
+
+    .bow-knot {
+      position: absolute;
+      top: -30px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 38px;
+      z-index: 15;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .bow-loop {
+      width: 28px;
+      height: 30px;
+      border: 6px solid #F59E0B;
+      border-radius: 50% 50% 10% 50%;
+      background: #FDE68A;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    }
+
+    .bow-loop.left {
+      transform: rotate(-35deg);
+    }
+
+    .bow-loop.right {
+      transform: rotate(35deg) scaleX(-1);
+    }
+
+    .bow-center {
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      background: #D97706;
+      border-radius: 50%;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+
+    /* Gift opening animation state */
+    .gift-box-wrap.open .box-lid {
+      transform: translateY(-80px) rotate(-28deg) scale(0.9);
+      opacity: 0.2;
+    }
+
+    .gift-box-wrap.open {
+      animation: boxBounce 0.6s ease forwards;
+    }
+
+    @keyframes boxBounce {
+      0% { transform: scale(1); }
+      40% { transform: scale(1.15) rotate(3deg); }
+      70% { transform: scale(0.95); }
+      100% { transform: scale(1.08); }
+    }
+
+    /* Subtle Heart Pulse */
+    @keyframes heartbeat {
+      0%, 100% { transform: scale(1); }
+      15% { transform: scale(1.18); }
+      30% { transform: scale(1.04); }
+      45% { transform: scale(1.22); }
+    }
+    .heart-beat {
+      animation: heartbeat 2s ease-in-out infinite;
+    }
+
+    /* Floating animation */
+    @keyframes floaty {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-7px); }
+    }
+    .float-slow {
+      animation: floaty 3.5s ease-in-out infinite;
+    }
+
+    /* Letter fold lines subtle aesthetic */
+    .letter-edge {
+      border-left: 3px double rgba(255, 182, 193, 0.45);
+      border-right: 3px double rgba(255, 182, 193, 0.45);
+    }
+  </style>
+</head>
+
+<body class="flex flex-col items-center justify-between min-h-screen text-slate-800 font-sans p-4 sm:p-6 select-none">
+  
+  <!-- Canvas for ambient hearts and confetti bursts -->
+  <canvas id="ambientCanvas"></canvas>
+  <canvas id="confettiCanvas"></canvas>
+
+  <!-- Top Bar: Progress Indicator & Sweet Sound Toggle -->
+  <header class="w-full max-w-md mx-auto pt-2 pb-4 z-20 flex items-center justify-between">
+    <!-- Progress breadcrumbs -->
+    <div class="flex items-center gap-1 sm:gap-2 px-3.5 py-1.5 rounded-full bg-white/70 backdrop-blur-md shadow-sm border border-rose-100 text-[11px] sm:text-xs font-medium text-rose-500">
+      <span id="step-1" class="font-bold text-deepruby">1. Letter</span>
+      <span class="text-rose-300">→</span>
+      <span id="step-2" class="opacity-50">2. Maafi</span>
+      <span class="text-rose-300">→</span>
+      <span id="step-3" class="opacity-50">3. Surprise</span>
+      <span class="text-rose-300">→</span>
+      <span id="step-4" class="opacity-50">4. Gift</span>
+    </div>
+
+    <!-- Gentle Sound Melody Button -->
+    <button id="musicToggleBtn" aria-label="Play romantic music" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/75 hover:bg-white backdrop-blur-md shadow-sm border border-rose-100 text-xs font-semibold text-rose-600 transition active:scale-95">
+      <span id="musicIcon" class="text-sm">🎵</span>
+      <span id="musicText" class="hidden sm:inline">Music</span>
+    </button>
+  </header>
+
+  <!-- Dynamic Content Container -->
+  <main class="w-full max-w-md mx-auto my-auto z-20 flex flex-col items-center justify-center relative">
+
+    <section id="screen-1" class="screen-container screen-visible flex-col items-center w-full">
+      <!-- Letter Envelope Card -->
+      <div class="paper-card paper-texture letter-edge rounded-3xl p-6 sm:p-8 w-full relative transition-all duration-300">
+        
+        <!-- Wax Seal / Heart Emblem -->
+        <div class="absolute -top-6 left-1/2 -translate-x-1/2 w-12 h-12 rounded-full bg-gradient-to-tr from-deepruby to-heartpink shadow-lg flex items-center justify-center text-white text-xl heart-beat border-2 border-white/80">
+          💌
+        </div>
+
+        <!-- Heading -->
+        <div class="text-center mt-4 mb-5">
+          <span class="inline-block px-3 py-1 bg-rose-50 text-heartpink text-xs uppercase tracking-widest font-bold rounded-full mb-2">
+            A Humble Apology
+          </span>
+          <h1 class="font-serif text-2xl sm:text-3xl font-bold text-slate-800 tracking-tight">
+            Mujhe Maaf Kar Dijiye <span class="text-heartpink">❤️</span>
+          </h1>
+          <div class="w-16 h-0.5 bg-gradient-to-r from-transparent via-rose-300 to-transparent mx-auto mt-2.5"></div>
+        </div>
+
+        <!-- Letter Body Text -->
+        <div class="space-y-3.5 text-slate-700 text-sm sm:text-base leading-relaxed bg-rose-50/50 p-4 sm:p-5 rounded-2xl border border-rose-100/70 font-sans">
+          <p class="font-semibold text-deepruby text-base sm:text-lg font-serif">
+            Madam Ji,
+          </p>
+          <p class="italic text-slate-600">
+            Mujhse jo mistake hui uske liye I am really sorry. Mera intention aapko hurt karna bilkul nahi tha.
+          </p>
+          <p>
+            Please meri galti ko maaf kar dijiye. Main promise karta hoon ki aage se iska poora dhyaan rakhunga.
+          </p>
+          <p class="font-medium text-slate-800 pt-1 border-t border-rose-200/50">
+            Bas ek baar dil se keh dijiye — <span class="font-bold text-deepruby font-serif text-base">Maaf Kiya?</span> 🥺❤️
+          </p>
+        </div>
+
+        <!-- Action Buttons Area -->
+        <div id="btnArea" class="relative mt-7 w-full h-24 flex items-center justify-center gap-3 sm:gap-4 overflow-visible">
+          <!-- Primary YES Button -->
+          <button id="btnYes" class="relative z-10 px-6 sm:px-8 py-3.5 rounded-2xl bg-gradient-to-r from-heartpink to-deepruby text-white font-bold text-sm sm:text-base shadow-lg shadow-rose-400/30 hover:shadow-rose-400/50 hover:scale-105 active:scale-95 transition-all flex items-center gap-2">
+            <span>Haan, Maaf Kiya</span>
+            <span class="text-lg">❤️</span>
+          </button>
+
+          <!-- Escaping NO Button -->
+          <button id="btnNo" class="px-5 sm:px-6 py-3.5 rounded-2xl bg-white text-slate-600 font-bold text-sm sm:text-base shadow-md border border-rose-200 hover:bg-rose-50 active:scale-90 transition-all flex items-center gap-1.5 cursor-pointer">
+            <span id="btnNoLabel">Nahi 😤</span>
+          </button>
+        </div>
+
+        <p class="text-center text-[11px] text-rose-400 mt-2 font-medium">
+          ( Sach keh raha hoon, galti se seekh li hai maine 🤞 )
+        </p>
+
+      </div>
+    </section>
+
+    <section id="screen-2" class="screen-container screen-hidden flex-col items-center w-full">
+      <div class="paper-card rounded-3xl p-6 sm:p-8 w-full text-center relative overflow-hidden">
+        <!-- Floating celebratory badge -->
+        <div class="w-16 h-16 mx-auto mb-4 rounded-2xl bg-rose-100 flex items-center justify-center text-3xl heart-beat shadow-inner">
+          🥹❤️
+        </div>
+
+        <span class="inline-block px-3 py-1 bg-emerald-50 text-emerald-600 border border-emerald-100 text-xs font-semibold rounded-full mb-3">
+          Dil Ko Sukoon Mila ✨
+        </span>
+
+        <h2 class="font-serif text-3xl sm:text-4xl font-bold text-deepruby mb-4">
+          Yayyy! 🥹❤️
+        </h2>
+
+        <div class="bg-rose-50/70 p-5 rounded-2xl border border-rose-100 mb-6 space-y-3">
+          <p class="text-base sm:text-lg font-medium text-slate-800">
+            Toh aapne mujhe maaf kar diya...<br>
+            <span class="font-serif font-bold text-heartpink text-xl">Thank You Madam Ji ❤️</span>
+          </p>
+          <div class="w-10 h-0.5 bg-rose-200 mx-auto"></div>
+          <p class="text-slate-600 text-sm sm:text-base leading-snug">
+            Ab ek chhoti si baat poochni thi...<br>
+            <span class="text-deepruby font-semibold">Abb aapne maaf kar diya hai... toh kya ye wala order kar du main? 👀🎁</span>
+          </p>
+        </div>
+
+        <button id="btnShowGift" class="w-full py-4 rounded-2xl bg-gradient-to-r from-heartpink to-deepruby text-white font-bold text-base shadow-lg shadow-rose-400/40 hover:shadow-rose-400/60 hover:scale-[1.02] active:scale-[0.98] transition flex items-center justify-center gap-2">
+          <span>Haan, dikhao</span>
+          <span class="text-xl">🎁</span>
+        </button>
+      </div>
+    </section>
+
+    <section id="screen-3" class="screen-container screen-hidden flex-col items-center w-full text-center">
+      <div class="paper-card rounded-3xl p-6 sm:p-8 w-full flex flex-col items-center relative">
+        
+        <span class="text-xs uppercase tracking-widest font-bold text-rose-500 bg-rose-50 px-3 py-1 rounded-full mb-3">
+          Surprise Unlocking...
+        </span>
+
+        <h3 class="font-serif text-2xl sm:text-3xl font-bold text-slate-800 mb-6">
+          Ek chhota sa surprise hai... 🎁
+        </h3>
+
+        <!-- 3D Gift Box Stage -->
+        <div class="gift-stage my-4 sm:my-6 float-slow">
+          <div id="interactiveGiftBox" class="gift-box-wrap group" title="Tap to open the gift!">
+            
+            <!-- Lid with Bow -->
+            <div class="box-lid">
+              <div class="bow-knot">
+                <div class="bow-loop left"></div>
+                <div class="bow-loop right"></div>
+                <div class="bow-center"></div>
+              </div>
+              <div class="ribbon-v" style="height: 48px;"></div>
+            </div>
+
+            <!-- Box Body with Ribbons -->
+            <div class="box-body">
+              <div class="ribbon-v"></div>
+              <div class="ribbon-h"></div>
+            </div>
+
+          </div>
+        </div>
+
+        <p class="mt-4 text-sm font-semibold text-deepruby flex items-center justify-center gap-1.5 animate-pulse">
+          <span>Box par tap karke open karo</span>
+          <span>❤️</span>
+        </p>
+        <p class="text-xs text-slate-400 mt-1">
+          ( Click / Tap the box to unwrap )
+        </p>
+      </div>
+    </section>
+
+    <section id="screen-4" class="screen-container screen-hidden flex-col items-center w-full">
+      <div class="paper-card rounded-3xl p-6 sm:p-8 w-full text-center relative border-2 border-rose-200 shadow-2xl">
+        
+        <!-- Celebration Crown -->
+        <div class="w-14 h-14 mx-auto -mt-12 mb-3 rounded-full bg-gradient-to-tr from-amber-400 to-rose-400 text-white flex items-center justify-center text-2xl shadow-lg border-4 border-white">
+          ✨
+        </div>
+
+        <h2 class="font-serif text-2xl sm:text-3xl font-bold text-slate-800 mb-2">
+          Toh... Order Kar Du? <span class="text-heartpink">👀❤️</span>
+        </h2>
+        <p class="text-xs text-rose-500 font-medium mb-5">
+          Aapke liye specially dhoonda hai!
+        </p>
+
+        <!-- Product Promo Card -->
+        <div class="bg-gradient-to-br from-rose-50 via-white to-pink-50 rounded-2xl p-5 border border-rose-200/80 text-left shadow-sm mb-6 space-y-3">
+          <div class="flex items-center gap-2">
+            <span class="px-2 py-0.5 bg-rose-500 text-white rounded-md text-[10px] font-bold uppercase tracking-wider">
+              Special Offer
+            </span>
+            <span class="text-xs font-semibold text-rose-700">Meesho Exclusive</span>
+          </div>
+
+          <p class="text-slate-800 font-medium text-sm sm:text-base leading-relaxed">
+            Hey, check out this product on <strong class="text-deepruby">Meesho</strong>!
+          </p>
+
+          <div class="space-y-1.5 pt-1 text-xs sm:text-sm text-slate-700">
+            <div class="flex items-center gap-2">
+              <span class="text-emerald-600 font-bold">✓</span>
+              <span>Get upto <strong>25% OFF</strong> on your first order.</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="text-emerald-600 font-bold">✓</span>
+              <span>Also grab <strong>extra 25%</strong> on new products every 3 hours!</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- External Meesho Link Button -->
+        <a id="btnProductLink" href="https://www.meesho.com/s/p/goxarr?utm_source=share_8a28ead80c03c87b497630254bedf36417e2243196a9a58a2efe5c17764785fc" target="_blank" rel="noopener noreferrer" class="w-full inline-flex items-center justify-center gap-2 py-4 px-6 rounded-2xl bg-gradient-to-r from-heartpink via-rose-500 to-deepruby text-white font-bold text-base shadow-lg shadow-rose-400/40 hover:shadow-rose-400/60 hover:scale-[1.02] active:scale-[0.98] transition-all">
+          <span>Product Dekho</span>
+          <span class="text-lg">🛍️</span>
+        </a>
+
+        <p class="text-sm font-semibold text-deepruby mt-4">
+          Pasand aaye toh bata dena ❤️
+        </p>
+
+        <!-- Replay link -->
+        <button id="btnReplay" class="mt-5 text-xs text-slate-400 hover:text-rose-500 underline transition">
+          ↺ Read apology letter again
+        </button>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Sweet Little Footer Note -->
+  <footer class="w-full text-center py-3 z-20 text-[12px] text-rose-400/80 font-medium">
+    Made with pure love & sincere regret 💌
+  </footer>
+
+  <script>
+    /* Ambient Canvas Particle Engine (Gentle hearts and sparkles) */
+    const ambCanvas = document.getElementById('ambientCanvas');
+    const ambCtx = ambCanvas.getContext('2d');
+    let ambWidth = window.innerWidth;
+    let ambHeight = window.innerHeight;
+
+    function resizeCanvas() {
+      ambWidth = window.innerWidth;
+      ambHeight = window.innerHeight;
+      ambCanvas.width = ambWidth;
+      ambCanvas.height = ambHeight;
+      const confCanvas = document.getElementById('confettiCanvas');
+      confCanvas.width = ambWidth;
+      confCanvas.height = ambHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    const particles = [];
+    const particleCount = 28;
+
+    class FloatingHeart {
+      constructor() {
+        this.reset();
+      }
+      reset() {
+        this.x = Math.random() * ambWidth;
+        this.y = ambHeight + 20 + Math.random() * 40;
+        this.size = 10 + Math.random() * 16;
+        this.speedY = 0.5 + Math.random() * 0.9;
+        this.speedX = (Math.random() - 0.5) * 0.6;
+        this.opacity = 0.15 + Math.random() * 0.35;
+        this.rotation = (Math.random() - 0.5) * 0.4;
+        this.rotSpeed = (Math.random() - 0.5) * 0.02;
+        this.color = Math.random() > 0.4 ? '#FFCCD5' : '#FFAAA6';
+      }
+      update() {
+        this.y -= this.speedY;
+        this.x += this.speedX;
+        this.rotation += this.rotSpeed;
+        if (this.y < -30 || this.x < -30 || this.x > ambWidth + 30) {
+          this.reset();
+        }
+      }
+      draw(ctx) {
+        ctx.save();
+        ctx.translate(this.x, this.y);
+        ctx.rotate(this.rotation);
+        ctx.globalAlpha = this.opacity;
+        ctx.fillStyle = this.color;
+        
+        // Draw Heart Shape
+        const s = this.size;
+        ctx.beginPath();
+        ctx.moveTo(0, s * 0.3);
+        ctx.bezierCurveTo(-s * 0.5, -s * 0.3, -s, s * 0.3, 0, s);
+        ctx.bezierCurveTo(s, s * 0.3, s * 0.5, -s * 0.3, 0, s * 0.3);
+        ctx.fill();
+        ctx.restore();
+      }
+    }
+
+    for (let i = 0; i < particleCount; i++) {
+      const p = new FloatingHeart();
+      p.y = Math.random() * ambHeight; // initial scatter
+      particles.push(p);
+    }
+
+    function animateAmbient() {
+      ambCtx.clearRect(0, 0, ambWidth, ambHeight);
+      particles.forEach(p => {
+        p.update();
+        p.draw(ambCtx);
+      });
+      requestAnimationFrame(animateAmbient);
+    }
+    animateAmbient();
+
+    const confCanvas = document.getElementById('confettiCanvas');
+    const confCtx = confCanvas.getContext('2d');
+    let confettiList = [];
+
+    class ConfettiPiece {
+      constructor(originX, originY) {
+        this.x = originX;
+        this.y = originY;
+        const angle = Math.random() * Math.PI * 2;
+        const velocity = 4 + Math.random() * 11;
+        this.vx = Math.cos(angle) * velocity;
+        this.vy = Math.sin(angle) * velocity - 3;
+        this.size = 6 + Math.random() * 8;
+        this.gravity = 0.22;
+        this.friction = 0.96;
+        this.rotation = Math.random() * 360;
+        this.rotSpeed = (Math.random() - 0.5) * 14;
+        this.colors = ['#FF4D6D', '#FF758F', '#FFB3C1', '#F59E0B', '#10B981', '#6366F1', '#EC4899'];
+        this.color = this.colors[Math.floor(Math.random() * this.colors.length)];
+        this.isHeart = Math.random() > 0.5;
+        this.alpha = 1;
+        this.decay = 0.008 + Math.random() * 0.01;
+      }
+      update() {
+        this.vx *= this.friction;
+        this.vy += this.gravity;
+        this.x += this.vx;
+        this.y += this.vy;
+        this.rotation += this.rotSpeed;
+        this.alpha -= this.decay;
+      }
+      draw(ctx) {
+        if (this.alpha <= 0) return;
+        ctx.save();
+        ctx.translate(this.x, this.y);
+        ctx.rotate((this.rotation * Math.PI) / 180);
+        ctx.globalAlpha = Math.max(0, this.alpha);
+        ctx.fillStyle = this.color;
+
+        if (this.isHeart) {
+          const s = this.size;
+          ctx.beginPath();
+          ctx.moveTo(0, s * 0.3);
+          ctx.bezierCurveTo(-s * 0.5, -s * 0.3, -s, s * 0.3, 0, s);
+          ctx.bezierCurveTo(s, s * 0.3, s * 0.5, -s * 0.3, 0, s * 0.3);
+          ctx.fill();
+        } else {
+          ctx.fillRect(-this.size / 2, -this.size / 2, this.size, this.size * 0.7);
+        }
+        ctx.restore();
+      }
+    }
+
+    function triggerConfettiBurst(x, y, count = 70) {
+      for (let i = 0; i < count; i++) {
+        confettiList.push(new ConfettiPiece(x, y));
+      }
+    }
+
+    function animateConfetti() {
+      confCtx.clearRect(0, 0, ambWidth, ambHeight);
+      for (let i = confettiList.length - 1; i >= 0; i--) {
+        const c = confettiList[i];
+        c.update();
+        c.draw(confCtx);
+        if (c.alpha <= 0) {
+          confettiList.splice(i, 1);
+        }
+      }
+      requestAnimationFrame(animateConfetti);
+    }
+    animateConfetti();
+
+    const btnNo = document.getElementById('btnNo');
+    const btnYes = document.getElementById('btnYes');
+    const btnNoLabel = document.getElementById('btnNoLabel');
+    const btnArea = document.getElementById('btnArea');
+
+    const funnyLabels = [
+      "Nahi 😤",
+      "Bilkul nahi 😑",
+      "Nope 😂",
+      "Pehle sorry bolo 😌",
+      "Aise kaise 😜",
+      "Pakad ke dikhao 🏃‍♂️",
+      "Sochna bhi mat 🙈",
+      "Maaf kar do na 🥺"
+    ];
+    let labelIdx = 0;
+    let escapeCount = 0;
+
+    function moveNoButtonAway(e) {
+      if (e) {
+        // Prevent accidental touch click
+        e.preventDefault();
+        e.stopPropagation();
+      }
+
+      escapeCount++;
+
+      // Change label dynamically
+      labelIdx = (labelIdx + 1) % funnyLabels.length;
+      btnNoLabel.textContent = funnyLabels[labelIdx];
+
+      // Get container and button bounds
+      const containerRect = btnArea.getBoundingClientRect();
+      const btnRect = btnNo.getBoundingClientRect();
+
+      // Viewport safety calculation: keep button within screen bounds
+      const padding = 16;
+      const maxX = window.innerWidth - btnRect.width - padding;
+      const minX = padding;
+      const maxY = window.innerHeight - btnRect.height - padding;
+      const minY = padding;
+
+      // Random new position anywhere reachable on screen or around container
+      let randomX, randomY;
+
+      if (escapeCount <= 3) {
+        // Subtle offset jumps initially
+        const deltaX = (Math.random() > 0.5 ? 1 : -1) * (70 + Math.random() * 80);
+        const deltaY = (Math.random() - 0.5) * 80;
+        const currentTargetX = btnRect.left + deltaX;
+        const currentTargetY = btnRect.top + deltaY;
+        randomX = Math.min(Math.max(minX, currentTargetX), maxX);
+        randomY = Math.min(Math.max(minY, currentTargetY), maxY);
+      } else {
+        // Full playful wandering jumps across safe screen areas
+        randomX = minX + Math.random() * (maxX - minX);
+        randomY = minY + Math.random() * (maxY - minY);
+      }
+
+      // Convert coordinate relative to fixed body positioning
+      btnNo.style.position = 'fixed';
+      btnNo.style.zIndex = '60';
+      btnNo.style.left = `${randomX}px`;
+      btnNo.style.top = `${randomY}px`;
+      
+      // Little cute spin and bounce animation
+      const tilt = (Math.random() - 0.5) * 20;
+      btnNo.style.transform = `scale(1.1) rotate(${tilt}deg)`;
+      setTimeout(() => {
+        btnNo.style.transform = `scale(1) rotate(0deg)`;
+      }, 180);
+
+      // Micro heart puff at previous spot
+      triggerConfettiBurst(btnRect.left + btnRect.width / 2, btnRect.top + btnRect.height / 2, 8);
+    }
+
+    // Comprehensive desktop & mobile touch event listener coverage
+    btnNo.addEventListener('mouseenter', moveNoButtonAway);
+    btnNo.addEventListener('pointerdown', moveNoButtonAway);
+    btnNo.addEventListener('touchstart', moveNoButtonAway, { passive: false });
+    btnNo.addEventListener('click', (e) => {
+      e.preventDefault();
+      moveNoButtonAway(e);
+    });
+
+    let currentScreen = 1;
+
+    function updateProgress(stepNumber) {
+      for (let i = 1; i <= 4; i++) {
+        const el = document.getElementById(`step-${i}`);
+        if (i === stepNumber) {
+          el.className = 'font-bold text-deepruby underline decoration-heartpink decoration-2';
+        } else if (i < stepNumber) {
+          el.className = 'text-heartpink font-medium';
+        } else {
+          el.className = 'opacity-50 text-slate-500';
+        }
+      }
+    }
+
+    function goToScreen(screenNumber) {
+      const currentEl = document.getElementById(`screen-${currentScreen}`);
+      const nextEl = document.getElementById(`screen-${screenNumber}`);
+
+      if (!nextEl || screenNumber === currentScreen) return;
+
+      currentEl.classList.remove('screen-visible');
+      currentEl.classList.add('screen-hidden');
+
+      setTimeout(() => {
+        nextEl.classList.remove('screen-hidden');
+        nextEl.classList.add('screen-visible');
+        currentScreen = screenNumber;
+        updateProgress(screenNumber);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }, 250);
+    }
+
+    // Step 1 Yes -> Step 2
+    btnYes.addEventListener('click', (e) => {
+      const rect = btnYes.getBoundingClientRect();
+      triggerConfettiBurst(rect.left + rect.width / 2, rect.top + rect.height / 2, 50);
+      playChime(523.25, 659.25, 783.99); // Joyful harmonic chord
+      setTimeout(() => {
+        goToScreen(2);
+      }, 400);
+    });
+
+    // Step 2 Next -> Step 3
+    const btnShowGift = document.getElementById('btnShowGift');
+    btnShowGift.addEventListener('click', () => {
+      playChime(659.25, 783.99, 987.77);
+      goToScreen(3);
+    });
+
+    // Step 3 Interactive Gift Box Tap
+    const interactiveGiftBox = document.getElementById('interactiveGiftBox');
+    let isGiftOpened = false;
+
+    interactiveGiftBox.addEventListener('click', () => {
+      if (isGiftOpened) return;
+      isGiftOpened = true;
+
+      // Add visual open class
+      interactiveGiftBox.classList.add('open');
+
+      // Burst confetti from gift center
+      const boxRect = interactiveGiftBox.getBoundingClientRect();
+      const centerX = boxRect.left + boxRect.width / 2;
+      const centerY = boxRect.top + boxRect.height / 2;
+      
+      triggerConfettiBurst(centerX, centerY, 80);
+      playChime(523.25, 659.25, 783.99, 1046.50);
+
+      // Smoothly reveal Screen 4 after opening animation
+      setTimeout(() => {
+        goToScreen(4);
+      }, 850);
+    });
+
+    // Replay apology letter button
+    const btnReplay = document.getElementById('btnReplay');
+    btnReplay.addEventListener('click', () => {
+      isGiftOpened = false;
+      interactiveGiftBox.classList.remove('open');
+      btnNo.style.position = '';
+      btnNo.style.left = '';
+      btnNo.style.top = '';
+      btnNo.style.transform = '';
+      btnNoLabel.textContent = "Nahi 😤";
+      escapeCount = 0;
+      goToScreen(1);
+    });
+
+    let audioCtx = null;
+    let isPlayingMusic = false;
+    let musicTimer = null;
+    let noteIndex = 0;
+
+    // Sweet nostalgic music box notes (pentatonic lofi arpeggio: C major / A minor sweet notes)
+    const melody = [
+      261.63, 329.63, 392.00, 523.25, 392.00, 329.63,
+      293.66, 349.23, 440.00, 587.33, 440.00, 349.23,
+      329.63, 392.00, 523.25, 659.25, 523.25, 392.00,
+      392.00, 493.88, 587.33, 783.99, 587.33, 493.88
+    ];
+
+    function initAudio() {
+      if (!audioCtx) {
+        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+        audioCtx = new AudioContextClass();
+      }
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+    }
+
+    function playNote(freq, timeOffset = 0, duration = 1.2) {
+      if (!audioCtx) return;
+      try {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+
+        // Music box style: sine + tiny bell chime
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime + timeOffset);
+
+        gain.gain.setValueAtTime(0.0001, audioCtx.currentTime + timeOffset);
+        gain.gain.exponentialRampToValueAtTime(0.08, audioCtx.currentTime + timeOffset + 0.04);
+        gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + timeOffset + duration);
+
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        osc.start(audioCtx.currentTime + timeOffset);
+        osc.stop(audioCtx.currentTime + timeOffset + duration + 0.1);
+      } catch (e) {
+        // Fallback gracefully if audio not permitted
+      }
+    }
+
+    function playChime(...freqs) {
+      initAudio();
+      freqs.forEach((f, idx) => {
+        playNote(f, idx * 0.09, 1.4);
+      });
+    }
+
+    function startBackgroundMusic() {
+      initAudio();
+      isPlayingMusic = true;
+      document.getElementById('musicIcon').textContent = '🔊';
+      document.getElementById('musicToggleBtn').classList.add('bg-rose-100', 'text-deepruby');
+
+      function loopMelody() {
+        if (!isPlayingMusic) return;
+        const currentFreq = melody[noteIndex % melody.length];
+        playNote(currentFreq, 0, 1.0);
+        
+        // Occasional soft bass root
+        if (noteIndex % 6 === 0) {
+          playNote(currentFreq / 2, 0, 1.8);
+        }
+
+        noteIndex++;
+        musicTimer = setTimeout(loopMelody, 360);
+      }
+      loopMelody();
+    }
+
+    function stopBackgroundMusic() {
+      isPlayingMusic = false;
+      if (musicTimer) clearTimeout(musicTimer);
+      document.getElementById('musicIcon').textContent = '🎵';
+      document.getElementById('musicToggleBtn').classList.remove('bg-rose-100', 'text-deepruby');
+    }
+
+    const musicToggleBtn = document.getElementById('musicToggleBtn');
+    musicToggleBtn.addEventListener('click', () => {
+      if (isPlayingMusic) {
+        stopBackgroundMusic();
+      } else {
+        startBackgroundMusic();
+      }
+    });
+
+    // Optional subtle auto-start on first user interaction if allowed
+    const startAudioOnFirstTouch = () => {
+      initAudio();
+      window.removeEventListener('pointerdown', startAudioOnFirstTouch);
+    };
+    window.addEventListener('pointerdown', startAudioOnFirstTouch, { once: true });
+  </script>
+</body>
+</html>
